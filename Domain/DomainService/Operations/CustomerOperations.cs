@@ -19,18 +19,15 @@ namespace DomainService.Operations
         {
             this.mainDbContext = mainDbContext;
         }
-        public IList<Customer> Search(string name, string surname, string identity, string phoneNumber, string sortBy, string sortDirection, int pageSize, int pageNumber, out int totalCount)
+        public IList<Customer> Search(string firstname, string lastname, string phoneNumber, string sortBy, string sortDirection, int pageSize, int pageNumber, out int totalCount)
         {
             var query = mainDbContext.Customers.AsQueryable();
 
-            if (!string.IsNullOrEmpty(name))
-                query = query.Where(x => x.Name == name);
+            if (!string.IsNullOrEmpty(firstname))
+                query = query.Where(x => x.FirstName == firstname);
 
-            if (!string.IsNullOrEmpty(surname))
-                query = query.Where(x => x.Surname == surname);
-
-            if (!string.IsNullOrEmpty(identity))
-                query = query.Where(x => x.Identity == identity);
+            if (!string.IsNullOrEmpty(lastname))
+                query = query.Where(x => x.LastName == lastname);
 
             if (!string.IsNullOrEmpty(phoneNumber))
                 query = query.Where(x => x.PhoneNumber == phoneNumber);
@@ -47,13 +44,9 @@ namespace DomainService.Operations
             return customer;
         }
 
-        public void Create(string name, string surname, string identity, string phoneNumber)
+        public void Create(string name, string surname, string phoneNumber)
         {
             #region Validations
-
-            var currentlyCustomer = mainDbContext.Customers.Where(x => x.Identity == identity).SingleOrDefault();
-            if (currentlyCustomer != null)
-                throw new BusinessException(400, "Müşteri kimlik numarası mevcut.");
 
             var currentlyPhone = mainDbContext.Customers.Where(x => x.PhoneNumber == phoneNumber).SingleOrDefault();
             if (currentlyPhone != null)
@@ -62,17 +55,16 @@ namespace DomainService.Operations
             #endregion
 
             Customer customer = new Customer();
-            customer.Name = name;
-            customer.Surname = surname;
-            customer.Identity = identity;
+            customer.FirstName = name;
+            customer.LastName = surname;
             customer.PhoneNumber = phoneNumber;
-            customer.CreatedOn= DateTime.Now;
+            customer.RegistrationDate = DateTime.Now;
             customer.Status = CustomerStatus.Active;
             mainDbContext.Customers.Add(customer);
             mainDbContext.SaveChanges();
         }
 
-        public void Update(int id, string name, string surname, string identity, string phoneNumber)
+        public void Update(int id, string name, string surname, string phoneNumber)
         {
             #region Validations
 
@@ -82,11 +74,9 @@ namespace DomainService.Operations
 
             #endregion
 
-            customer.Name = name;
-            customer.Surname = surname;
-            customer.Identity = identity;
+            customer.FirstName = name;
+            customer.LastName = surname;
             customer.PhoneNumber = phoneNumber;
-            customer.UpdatedOn= DateTime.Now;   
             mainDbContext.SaveChanges();
         }
 

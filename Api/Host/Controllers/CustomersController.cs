@@ -19,7 +19,7 @@ namespace Host.Controllers
         [HttpGet]
         public ActionResult<SearchCustomersResponse> Search([FromQuery] SearchCustomersRequest request)
         {
-            var customers = customerOperations.Search(request.name, request.surname, request.phoneNumber, request.identity, request.sortBy, request.sortDirection, request.pageSize, request.pageNumber, out int totalCount);
+            var customers = customerOperations.Search(request.name, request.surname, request.phoneNumber, request.sortBy, request.sortDirection, request.pageSize, request.pageNumber, out int totalCount);
             SearchCustomersResponse response = new SearchCustomersResponse();
 
             foreach (var customer in customers)
@@ -27,12 +27,10 @@ namespace Host.Controllers
                 response.customers.Add(new SearchCustomersResponse.Customers()
                 {
                     id = customer.Id,
-                    identity = customer.Identity,
-                    name = customer.Name,
+                    name = customer.FirstName,
                     phoneNumber = customer.PhoneNumber,
-                    surname = customer.Surname,
-                    CreatedOn = customer.CreatedOn,
-                    UpdatedOn = customer.UpdatedOn,
+                    surname = customer.LastName,
+                    CreatedOn = customer.RegistrationDate,
                     isDeleted = customer.IsDeleted,
                     status = (int)customer.Status
                 });
@@ -49,12 +47,10 @@ namespace Host.Controllers
             var customer = customerOperations.GetSingle(id);
             GetSingleCustomerResponse response = new GetSingleCustomerResponse();
             response.id = customer.Id;
-            response.identity = customer.Identity;
-            response.name = customer.Name;
+            response.name = customer.FirstName;
             response.phoneNumber = customer.PhoneNumber;
-            response.surname = customer.Surname;
-            response.CreatedOn = customer.CreatedOn;
-            response.UpdatedOn = customer.UpdatedOn;
+            response.surname = customer.LastName;
+            response.CreatedOn = customer.RegistrationDate;
             response.isDeleted = customer.IsDeleted;
             response.status = (int)customer.Status;
 
@@ -65,14 +61,14 @@ namespace Host.Controllers
         public void Create([FromBody] CreateCustomerRequest request)
         {
             ValidateRequest<CreateCustomerRequest, CreateCustomerRequestValidator>(request);
-            customerOperations.Create(request.name, request.surname, request.identity, request.phoneNumber);
+            customerOperations.Create(request.name, request.surname, request.phoneNumber);
         }
 
         [HttpPut("{id}")]
         public void Update(int id, [FromBody] UpdateCustomerRequest request)
         {
             ValidateRequest<UpdateCustomerRequest, UpdateCustomerRequestValidator>(request);
-            customerOperations.Update(id, request.name, request.surname, request.identity, request.phoneNumber);
+            customerOperations.Update(id, request.name, request.surname, request.phoneNumber);
         }
 
         [HttpDelete("{id}")]

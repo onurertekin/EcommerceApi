@@ -49,8 +49,8 @@ namespace Host
 
             #region Registrations
 
-            services.AddTransient<CategoryOperations>();
-            services.AddTransient<CustomerOperations>();
+            //services.AddTransient<CategoryOperations>();
+            //services.AddTransient<CustomerOperations>();
 
 
 
