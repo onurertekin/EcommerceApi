@@ -10,6 +10,8 @@ namespace Contract.Request.Categories
     public class UpdateCategoriesRequest
     {
         public string name { get; set; }
+        public string description { get; set; }
+        public int categoryParentId { get; set; }
         public DateTime? UpdatedOn { get; set; }
         public int status { get; set; }
     }

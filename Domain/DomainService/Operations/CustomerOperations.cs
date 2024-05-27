@@ -19,18 +19,30 @@ namespace DomainService.Operations
         {
             this.mainDbContext = mainDbContext;
         }
-        public IList<Customer> Search(string firstname, string lastname, string phoneNumber, string sortBy, string sortDirection, int pageSize, int pageNumber, out int totalCount)
+        public IList<Customer> Search(string firstName, string lastName, string userName, string password, string email, string phoneNumber,string gender, string sortBy, string sortDirection, int pageSize, int pageNumber, out int totalCount)
         {
             var query = mainDbContext.Customers.AsQueryable();
 
-            if (!string.IsNullOrEmpty(firstname))
-                query = query.Where(x => x.FirstName == firstname);
+            if (!string.IsNullOrEmpty(firstName))
+                query = query.Where(x => x.FirstName == firstName);
 
-            if (!string.IsNullOrEmpty(lastname))
-                query = query.Where(x => x.LastName == lastname);
+            if (!string.IsNullOrEmpty(lastName))
+                query = query.Where(x => x.LastName == lastName);
+
+            if (!string.IsNullOrEmpty(userName))
+                query = query.Where(x => x.UserName == userName);
+
+            if (!string.IsNullOrEmpty(password))
+                query = query.Where(x => x.Password == password);
+
+            if (!string.IsNullOrEmpty(email))
+                query = query.Where(x => x.Email == email);
 
             if (!string.IsNullOrEmpty(phoneNumber))
                 query = query.Where(x => x.PhoneNumber == phoneNumber);
+
+            if (!string.IsNullOrEmpty(gender))
+                query = query.Where(x => x.Gender == gender);
 
 
             return query.GetPagedAndSorted(pageNumber, pageSize, sortDirection, sortBy, out totalCount);
@@ -44,7 +56,7 @@ namespace DomainService.Operations
             return customer;
         }
 
-        public void Create(string name, string surname, string phoneNumber)
+        public void Create(string firstName, string lastName, string userName, string password, string email, string phoneNumber,string gender)
         {
             #region Validations
 
@@ -52,19 +64,31 @@ namespace DomainService.Operations
             if (currentlyPhone != null)
                 throw new BusinessException(400, "Telefon numarası mevcut.");
 
+            var currentlyEmail = mainDbContext.Customers.Where(x => x.Email == email).SingleOrDefault();
+            if (currentlyEmail != null)
+                throw new BusinessException(400, "Email adresi mevcut.");
+
+            var currentlyUserName = mainDbContext.Customers.Where(x => x.UserName == userName).SingleOrDefault();
+            if (currentlyUserName != null)
+                throw new BusinessException(400, "Kullanıcı adı mevcut.");
+
             #endregion
 
             Customer customer = new Customer();
-            customer.FirstName = name;
-            customer.LastName = surname;
+            customer.FirstName = firstName;
+            customer.LastName = lastName;
+            customer.UserName = userName;
+            customer.Password = password;
+            customer.Email = email;
             customer.PhoneNumber = phoneNumber;
+            customer.Gender = gender;
             customer.RegistrationDate = DateTime.Now;
             customer.Status = CustomerStatus.Active;
             mainDbContext.Customers.Add(customer);
             mainDbContext.SaveChanges();
         }
 
-        public void Update(int id, string name, string surname, string phoneNumber)
+        public void Update(int id, string firstName, string lastName, string userName, string password, string email, string phoneNumber)
         {
             #region Validations
 
@@ -74,8 +98,11 @@ namespace DomainService.Operations
 
             #endregion
 
-            customer.FirstName = name;
-            customer.LastName = surname;
+            customer.FirstName = firstName;
+            customer.LastName = lastName;
+            customer.UserName = userName;
+            customer.Password = password;
+            customer.Email = email;
             customer.PhoneNumber = phoneNumber;
             mainDbContext.SaveChanges();
         }

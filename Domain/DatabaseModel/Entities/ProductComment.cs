@@ -11,11 +11,7 @@ namespace DatabaseModel.Entities
     [Table("ProductComments")]
     public class ProductComment
     {
-        public ProductComment()
-        {
-             Products = new HashSet<Product>();
-             Customers = new HashSet<Customer>();
-        }
+
         public int Id { get; set; }
         public int ProductId { get; set; }
         public int CustomerId { get; set; }
@@ -24,6 +20,5 @@ namespace DatabaseModel.Entities
         public string Comment { get; set; }
 
         public virtual ISet<Product> Products { get; set;}
-        public virtual ISet<Customer> Customers { get; set;}
     }
 }
