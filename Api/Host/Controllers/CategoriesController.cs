@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Host.Controllers
 {
     [ApiController]
-    [Route("library-api/categories")]
+    [Route("ecommerce-api/categories")]
     public class CategoriesController : BaseController
     {
         private readonly CategoryOperations categoryOperations;
@@ -21,7 +21,7 @@ namespace Host.Controllers
         [HttpGet]
         public ActionResult<SearchCategoriesResponse> Search([FromQuery] SearchCategoriesRequest request)
         {
-            var categories = categoryOperations.Search(request.name, request.sortBy, request.sortDirection, request.pageSize, request.pageNumber, out int totalCount);
+            var categories = categoryOperations.Search(request.name, request.description, request.categoryParentId, request.sortBy, request.sortDirection, request.pageSize, request.pageNumber, out int totalCount);
 
             SearchCategoriesResponse response = new SearchCategoriesResponse();
             foreach (var category in categories)
@@ -29,7 +29,9 @@ namespace Host.Controllers
                 response.categories.Add(new SearchCategoriesResponse.Categories()
                 {
                     name = category.Name,
+                    description = category.Description,
                     id = category.Id,
+                    categoryParentId = category.CategoryParentId,
                     CreatedOn = category.CreatedOn,
                     UpdatedOn = category.UpdatedOn,
                     status = (int)category.Status
@@ -48,6 +50,8 @@ namespace Host.Controllers
             var category = categoryOperations.GetSingle(id);
             GetSingleCategoriesResponse response = new GetSingleCategoriesResponse();
             response.id = category.Id;
+            response.categoryParentId = category.CategoryParentId;
+            response.description = category.Description;
             response.name = category.Name;
             response.CreatedOn = category.CreatedOn;
             response.UpdatedOn = category.UpdatedOn;
@@ -59,14 +63,14 @@ namespace Host.Controllers
         public void Create([FromBody] CreateCategoriesRequest request)
         {
             ValidateRequest<CreateCategoriesRequest, CreateCategoriesRequestValidator>(request);
-            categoryOperations.Create(request.name);
+            categoryOperations.Create(request.name, request.description, request.categoryParentId);
         }
 
         [HttpPut("{id}")]
         public void Update(int id, [FromBody] UpdateCategoriesRequest request)
         {
             ValidateRequest<UpdateCategoriesRequest, UpdateCategoriesRequestValidator>(request);
-            categoryOperations.Update(id, request.name);
+            categoryOperations.Update(id, request.name, request.description, request.categoryParentId);
         }
 
         [HttpDelete("{id}")]

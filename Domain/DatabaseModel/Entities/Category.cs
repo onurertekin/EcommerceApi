@@ -19,8 +19,7 @@ namespace DatabaseModel.Entities
         public DateTime UpdatedOn { get; set; }
         public CategoryStatus Status { get; set; }
 
-        public virtual ISet<Product> Products { get; set; }  
-        public virtual ISet<CategoryParent> CategoryParent { get; set; }
+        public virtual ISet<Product> Products { get; set; }
 
 
     }

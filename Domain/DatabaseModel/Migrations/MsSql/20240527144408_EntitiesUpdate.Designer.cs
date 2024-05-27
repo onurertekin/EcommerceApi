@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DatabaseModel.Migrations.MsSql
 {
     [DbContext(typeof(MainDbContext))]
-    [Migration("20240520212542_EntitiesAdded")]
-    partial class EntitiesAdded
+    [Migration("20240527144408_EntitiesUpdate")]
+    partial class EntitiesUpdate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -112,17 +112,12 @@ namespace DatabaseModel.Migrations.MsSql
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
 
                     b.ToTable("CategoryParents");
                 });
@@ -171,9 +166,6 @@ namespace DatabaseModel.Migrations.MsSql
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
-                    b.Property<int?>("ProductCommentId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("datetime2");
 
@@ -186,8 +178,6 @@ namespace DatabaseModel.Migrations.MsSql
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProductCommentId");
 
                     b.ToTable("Customers");
                 });
@@ -211,9 +201,6 @@ namespace DatabaseModel.Migrations.MsSql
                     b.Property<bool>("IsDefault")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
-
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasMaxLength(10)
@@ -235,8 +222,6 @@ namespace DatabaseModel.Migrations.MsSql
                         .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
 
                     b.ToTable("CustomerAddresses");
                 });
@@ -455,27 +440,6 @@ namespace DatabaseModel.Migrations.MsSql
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DatabaseModel.Entities.CategoryParent", b =>
-                {
-                    b.HasOne("DatabaseModel.Entities.Category", null)
-                        .WithMany("CategoryParent")
-                        .HasForeignKey("CategoryId");
-                });
-
-            modelBuilder.Entity("DatabaseModel.Entities.Customer", b =>
-                {
-                    b.HasOne("DatabaseModel.Entities.ProductComment", null)
-                        .WithMany("Customers")
-                        .HasForeignKey("ProductCommentId");
-                });
-
-            modelBuilder.Entity("DatabaseModel.Entities.CustomerAddress", b =>
-                {
-                    b.HasOne("DatabaseModel.Entities.Order", null)
-                        .WithMany("Address")
-                        .HasForeignKey("OrderId");
-                });
-
             modelBuilder.Entity("DatabaseModel.Entities.Order", b =>
                 {
                     b.HasOne("DatabaseModel.Entities.OrderItem", null)
@@ -524,16 +488,6 @@ namespace DatabaseModel.Migrations.MsSql
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DatabaseModel.Entities.Category", b =>
-                {
-                    b.Navigation("CategoryParent");
-                });
-
-            modelBuilder.Entity("DatabaseModel.Entities.Order", b =>
-                {
-                    b.Navigation("Address");
-                });
-
             modelBuilder.Entity("DatabaseModel.Entities.OrderItem", b =>
                 {
                     b.Navigation("Order");
@@ -543,8 +497,6 @@ namespace DatabaseModel.Migrations.MsSql
 
             modelBuilder.Entity("DatabaseModel.Entities.ProductComment", b =>
                 {
-                    b.Navigation("Customers");
-
                     b.Navigation("Products");
                 });
 #pragma warning restore 612, 618

@@ -17,7 +17,6 @@ namespace DatabaseModel.Entities
         public int OrderStatus { get; set; }
 
         public virtual ISet<Customer> Customers { get; set; }
-        public virtual ISet<CustomerAddress> Address { get; set; }
         public virtual ISet<Product> Products { get; set; }
 
     }

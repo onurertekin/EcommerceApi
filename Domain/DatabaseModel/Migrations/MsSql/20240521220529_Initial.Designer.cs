@@ -4,6 +4,7 @@ using DatabaseModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DatabaseModel.Migrations.MsSql
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240521220529_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -198,6 +201,9 @@ namespace DatabaseModel.Migrations.MsSql
                     b.Property<bool>("IsDefault")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("int");
+
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasMaxLength(10)
@@ -219,6 +225,8 @@ namespace DatabaseModel.Migrations.MsSql
                         .HasColumnType("nvarchar(20)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
 
                     b.ToTable("CustomerAddresses");
                 });
@@ -437,6 +445,13 @@ namespace DatabaseModel.Migrations.MsSql
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DatabaseModel.Entities.CustomerAddress", b =>
+                {
+                    b.HasOne("DatabaseModel.Entities.Order", null)
+                        .WithMany("Address")
+                        .HasForeignKey("OrderId");
+                });
+
             modelBuilder.Entity("DatabaseModel.Entities.Order", b =>
                 {
                     b.HasOne("DatabaseModel.Entities.OrderItem", null)
@@ -483,6 +498,11 @@ namespace DatabaseModel.Migrations.MsSql
                         .HasForeignKey("ProductImageId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("DatabaseModel.Entities.Order", b =>
+                {
+                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("DatabaseModel.Entities.OrderItem", b =>

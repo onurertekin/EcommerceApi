@@ -7,6 +7,7 @@ using DomainService.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,12 +22,18 @@ namespace DomainService.Operations
             this.mainDbContext = mainDbContext;
         }
 
-        public IList<Category> Search(string? name, string sortBy, string sortDirection, int pageSize, int pageNumber, out int totalCount)
+        public IList<Category> Search(string name, string description, int categoryParentId, string sortBy, string sortDirection, int pageSize, int pageNumber, out int totalCount)
         {
             var query = mainDbContext.Categories.AsQueryable();
 
             if (!string.IsNullOrEmpty(name)) //adam gönderdiyse.
                 query = query.Where(x => x.Name == name);
+
+            if (!string.IsNullOrEmpty(description))
+                query = query.Where(x => x.Description == description);
+
+            if (categoryParentId != 0)
+                query = query.Where(x => x.CategoryParentId == categoryParentId);
 
             return query.GetPagedAndSorted(pageNumber, pageSize, sortDirection, sortBy, out totalCount);
         }
@@ -38,7 +45,7 @@ namespace DomainService.Operations
 
             return category;
         }
-        public void Create(string name)
+        public void Create(string name, string description, int categoryParentId)
         {
             #region Validations
 
@@ -50,13 +57,15 @@ namespace DomainService.Operations
 
             Category category = new Category();
             category.Name = name;
+            category.Description = description;
+            category.CategoryParentId = categoryParentId;
             category.CreatedOn = DateTime.Now;
             category.Status = CategoryStatus.Active;
-            mainDbContext.Categories.Add(category);
 
+            mainDbContext.Categories.Add(category);
             mainDbContext.SaveChanges();
         }
-        public void Update(int id, string name)
+        public void Update(int id, string name, string description, int categoryParentId)
         {
             #region Validations
 
@@ -71,7 +80,10 @@ namespace DomainService.Operations
                 throw new BusinessException(404, "Kategori bulunamadı.");
 
             category.Name = name;
+            category.Description = description;
+            category.CategoryParentId = categoryParentId;
             category.UpdatedOn = DateTime.Now;
+            category.Description = description;
 
             mainDbContext.SaveChanges();
         }

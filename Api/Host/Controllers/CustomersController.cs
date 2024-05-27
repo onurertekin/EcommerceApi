@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Host.Controllers
 {
     [ApiController]
-    [Route("library-api/customers")]
+    [Route("ecommerce-api/customers")]
     public class CustomersController : BaseController
     {
         private readonly CustomerOperations customerOperations;
@@ -19,7 +19,7 @@ namespace Host.Controllers
         [HttpGet]
         public ActionResult<SearchCustomersResponse> Search([FromQuery] SearchCustomersRequest request)
         {
-            var customers = customerOperations.Search(request.name, request.surname, request.phoneNumber, request.sortBy, request.sortDirection, request.pageSize, request.pageNumber, out int totalCount);
+            var customers = customerOperations.Search(request.firstName, request.lastName, request.userName, request.password, request.email, request.phoneNumber, request.gender, request.sortBy, request.sortDirection, request.pageSize, request.pageNumber, out int totalCount);
             SearchCustomersResponse response = new SearchCustomersResponse();
 
             foreach (var customer in customers)
@@ -27,9 +27,13 @@ namespace Host.Controllers
                 response.customers.Add(new SearchCustomersResponse.Customers()
                 {
                     id = customer.Id,
-                    name = customer.FirstName,
+                    firstName = customer.FirstName,
                     phoneNumber = customer.PhoneNumber,
-                    surname = customer.LastName,
+                    lastName = customer.LastName,
+                    userName = customer.UserName,
+                    password = customer.Password,
+                    email = customer.Email,
+                    gender = customer.Gender,
                     CreatedOn = customer.RegistrationDate,
                     isDeleted = customer.IsDeleted,
                     status = (int)customer.Status
@@ -47,9 +51,13 @@ namespace Host.Controllers
             var customer = customerOperations.GetSingle(id);
             GetSingleCustomerResponse response = new GetSingleCustomerResponse();
             response.id = customer.Id;
-            response.name = customer.FirstName;
+            response.firstName = customer.FirstName;
             response.phoneNumber = customer.PhoneNumber;
-            response.surname = customer.LastName;
+            response.lastName = customer.LastName;
+            response.userName = customer.UserName;
+            response.password = customer.Password;
+            response.email = customer.Email;
+            response.gender = customer.Gender;
             response.CreatedOn = customer.RegistrationDate;
             response.isDeleted = customer.IsDeleted;
             response.status = (int)customer.Status;
@@ -61,14 +69,14 @@ namespace Host.Controllers
         public void Create([FromBody] CreateCustomerRequest request)
         {
             ValidateRequest<CreateCustomerRequest, CreateCustomerRequestValidator>(request);
-            customerOperations.Create(request.name, request.surname, request.phoneNumber);
+            customerOperations.Create(request.firstName, request.lastName, request.userName, request.password, request.email, request.phoneNumber, request.gender);
         }
 
         [HttpPut("{id}")]
         public void Update(int id, [FromBody] UpdateCustomerRequest request)
         {
             ValidateRequest<UpdateCustomerRequest, UpdateCustomerRequestValidator>(request);
-            customerOperations.Update(id, request.name, request.surname, request.phoneNumber);
+            customerOperations.Update(id, request.firstName, request.lastName, request.userName, request.password, request.email, request.phoneNumber);
         }
 
         [HttpDelete("{id}")]

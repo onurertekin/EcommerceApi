@@ -12,7 +12,9 @@ namespace Contract.Response.Categories
         public class Categories
         {
             public int id { get; set; }
-            public string? name { get; set; }
+            public string name { get; set; }
+            public string description { get; set; }
+            public int categoryParentId { get; set; }
             public DateTime CreatedOn { get; set; }
             public DateTime? UpdatedOn { get; set; }
             public int status { get; set; }
