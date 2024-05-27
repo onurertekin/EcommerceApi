@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Contract.Request.NewFolder
+namespace Contract.Request.CategoryParent
 {
-    internal class SearchCustomerAddressesRequest
+    public class CreateCategoryParentRequest
     {
+        public string name { get; set; }
     }
 }
