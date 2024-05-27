@@ -7,12 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Request\NewFolder\**" />
-    <EmbeddedResource Remove="Request\NewFolder\**" />
-    <None Remove="Request\NewFolder\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.9.1" />
   </ItemGroup>
   
