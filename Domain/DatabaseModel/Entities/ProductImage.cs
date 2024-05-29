@@ -10,10 +10,6 @@ namespace DatabaseModel.Entities
     [Table("ProductImages")]
     public class ProductImage
     {
-        public ProductImage()
-        {
-            Products = new HashSet<Product>();
-        }
         public int Id { get; set; }
         public int ProductId { get; set; }
 

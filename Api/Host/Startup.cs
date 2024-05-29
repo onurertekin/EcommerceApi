@@ -55,6 +55,7 @@ namespace Host
             services.AddTransient<OrderOperations>();
             services.AddTransient<CategoryParentOperations>();
             services.AddTransient<OrderItemOperations>();
+            services.AddTransient<ProductOperations>();
 
             #endregion
         }

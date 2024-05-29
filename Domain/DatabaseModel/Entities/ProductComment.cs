@@ -18,7 +18,5 @@ namespace DatabaseModel.Entities
 
         [StringLength(500)]
         public string Comment { get; set; }
-
-        public virtual ISet<Product> Products { get; set;}
     }
 }

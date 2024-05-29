@@ -4,6 +4,7 @@ using DatabaseModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DatabaseModel.Migrations.MsSql
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240529224534_ProductEntitiesUpdate")]
+    partial class ProductEntitiesUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -293,6 +296,9 @@ namespace DatabaseModel.Migrations.MsSql
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int?>("OrderItemId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
@@ -303,6 +309,8 @@ namespace DatabaseModel.Migrations.MsSql
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderItemId");
 
                     b.ToTable("Products");
                 });
@@ -422,6 +430,13 @@ namespace DatabaseModel.Migrations.MsSql
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("DatabaseModel.Entities.Product", b =>
+                {
+                    b.HasOne("DatabaseModel.Entities.OrderItem", null)
+                        .WithMany("Product")
+                        .HasForeignKey("OrderItemId");
+                });
+
             modelBuilder.Entity("Orders_Products", b =>
                 {
                     b.HasOne("DatabaseModel.Entities.Order", null)
@@ -450,6 +465,11 @@ namespace DatabaseModel.Migrations.MsSql
                         .HasForeignKey("ProductImageId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("DatabaseModel.Entities.OrderItem", b =>
+                {
+                    b.Navigation("Product");
                 });
 #pragma warning restore 612, 618
         }
