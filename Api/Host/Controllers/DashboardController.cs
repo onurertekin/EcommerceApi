@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Host.Controllers
 {
     [ApiController]
-    [Route("library-api/dashboard")]
+    [Route("ecommerce-api/dashboard")]
     public class DashboardController : BaseController
     {
 

@@ -12,7 +12,6 @@ namespace DatabaseModel.Entities
     {
         public int Id { get; set; }
         public int ProductId { get; set; }
-
         public virtual ISet<Product> Products { get; set; } 
     }
 }
